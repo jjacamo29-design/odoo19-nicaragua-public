@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_gama_commission_line_list" model="ir.ui.view">
+        <field name="name">gama.commission.line.list</field>
+        <field name="model">gama.commission.line</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0">
+                <field name="employee_id"/>
+                <field name="payslip_id"/>
+                <field name="payslip_state" optional="show"/>
+                <field name="commission_type"/>
+                <field name="date"/>
+                <field name="invoice_id"/>
+                <field name="partner_id"/>
+                <field name="sale_order_id" optional="hide"/>
+                <field name="collector_source" optional="show"/>
+                <field name="base_amount" sum="Base"/>
+                <field name="rate"/>
+                <field name="commission_amount" sum="Comisión"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_gama_commission_line_pivot" model="ir.ui.view">
+        <field name="name">gama.commission.line.pivot</field>
+        <field name="model">gama.commission.line</field>
+        <field name="arch" type="xml">
+            <pivot string="Comisiones de vendedores">
+                <field name="employee_id" type="row"/>
+                <field name="commission_type" type="col"/>
+                <field name="base_amount" type="measure"/>
+                <field name="commission_amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_gama_commission_line_search" model="ir.ui.view">
+        <field name="name">gama.commission.line.search</field>
+        <field name="model">gama.commission.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="invoice_id"/>
+                <field name="partner_id"/>
+                <filter name="recovery" string="Recuperación de cartera" domain="[('commission_type', '=', 'recovery')]"/>
+                <filter name="cash" string="Venta de contado" domain="[('commission_type', '=', 'cash')]"/>
+                <separator/>
+                <filter name="not_cancel" string="Nóminas vigentes" domain="[('payslip_state', '!=', 'cancel')]"/>
+                <group>
+                    <filter name="group_employee" string="Vendedor" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_type" string="Tipo" context="{'group_by': 'commission_type'}"/>
+                    <filter name="group_month" string="Mes" context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_gama_commission_line" model="ir.actions.act_window">
+        <field name="name">Detalle de comisiones</field>
+        <field name="res_model">gama.commission.line</field>
+        <field name="view_mode">pivot,list</field>
+        <field name="context">{'search_default_not_cancel': 1}</field>
+    </record>
+
+    <menuitem id="menu_gama_commission_line"
+              name="Comisiones de vendedores"
+              parent="hr_payroll.menu_hr_payroll_report"
+              action="action_gama_commission_line"
+              sequence="90"/>
+</odoo>
