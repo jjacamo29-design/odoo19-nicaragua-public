@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_payslip_form_gama_commission" model="ir.ui.view">
+        <field name="name">hr.payslip.form.gama.commission</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='salary_computation']" position="after">
+                <page name="gama_commissions" string="Comisiones de ventas" invisible="not gama_commission_enabled">
+                    <group>
+                        <group>
+                            <field name="gama_commission_date_from" readonly="state != 'draft'"/>
+                            <field name="gama_commission_date_to" readonly="state != 'draft'"/>
+                            <button name="action_gama_compute_commissions" type="object"
+                                    string="Traer comisiones de Facturación" class="btn-secondary"
+                                    icon="fa-refresh" invisible="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="gama_recovery_base"/>
+                            <field name="gama_cash_base"/>
+                            <field name="gama_commission_total"/>
+                        </group>
+                    </group>
+                    <field name="gama_commission_line_ids" readonly="1">
+                        <list>
+                            <field name="commission_type"/>
+                            <field name="date"/>
+                            <field name="invoice_id"/>
+                            <field name="partner_id"/>
+                            <field name="sale_order_id" optional="show"/>
+                            <field name="payment_move_id" optional="hide"/>
+                            <field name="collector_source" optional="show"/>
+                            <field name="base_amount" sum="Base"/>
+                            <field name="rate"/>
+                            <field name="commission_amount" sum="Comisión"/>
+                            <field name="currency_id" column_invisible="1"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
